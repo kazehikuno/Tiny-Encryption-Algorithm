@@ -4,14 +4,14 @@
 
 #include "tea.h"
 
-#define JTAG_ADDR 0x10001000
+#define JTAG_ADDR 0x10001000                // address of jtag
 
-__attribute__ ((section (".text")));
+__attribute__ ((section (".text")));        // nios ii program memory organization
   
 /*** function declarations ***/
 void put_jtag(int volatile *, char);  		// print one character to the jtag
 
-const uint32_t my_key[4] = { 0x95a8882c, 0x9d2cc113, 0x815aa0cd, 0xa1c489f7 };		// the key
+const uint32_t my_key[4] = { 0x95a8882c, 0x9d2cc113, 0x815aa0cd, 0xa1c489f7 };		// the encryption key
 
 
 int main(void){
@@ -20,15 +20,15 @@ int main(void){
 	int i;
 	char input[] = "\nThis is the test string printed from allocated memory.\n> ";		// uart test string
 	
-	int data_len = strlen(input);
-	char *bytes = (char*)malloc(data_len+15);
-	for (i = 0; i < data_len; i++){
+	int data_len = strlen(input);                   // the length of our test data
+	char *bytes = (char*)malloc(data_len+15);       // allocate memory for it (+15 bytes)
+	for (i = 0; i < data_len; i++){                 // copy the test data into this memory
 		bytes[i] = input[i];
 	}
 	
 													// create the arguments for the encrypt function
 	uint8_t *data = (uint8_t*)bytes;				// create an array pointer to the data and cast it in unsigned 8-bit chunks
-	uint32_t *len = (uint32_t*)&data_len;		// create a pointer to the length of the data, cast it as 32-bit number
+	uint32_t *len = (uint32_t*)&data_len;		    // create a pointer to the length of the data, cast it as 32-bit number
 	uint32_t *key = (uint32_t*)my_key;				// create a pointer to the key, cast it as 32-bit number
 	
 	encryptData(data, len, key);						// encrypt
